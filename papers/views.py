@@ -2,6 +2,8 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.contrib.auth.decorators import login_required
+from .models import Paper
+from .serializers import PaperSerializer, LevelSerializer, SubjectSerializer
 
 # Home page route
 # We should not forget to add the following functionalities in this route:
@@ -11,8 +13,9 @@ from django.contrib.auth.decorators import login_required
 # ● We should implement pagination for large datasets.
 @api_view(['GET'])
 def index(request):
-    # Placeholder
-    papers = []
+    papers = Paper.objects.all()
+    serializer = PaperSerializer(papers, many=True)
+    papers = serializer.data
 
     return Response({'papers': papers}, status=status.HTTP_200_OK)
 
