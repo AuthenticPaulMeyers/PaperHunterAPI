@@ -29,13 +29,13 @@ def upload_files_to_supabase(file):
         filename = secure_filename(file.filename)
         file_path_in_bucket = f"{folder_in_bucket}/{filename}"
         file_bytes = file.read()
-        res = supabase.storage.from_(bucket_name).upload(
+        response = supabase.storage.from_(bucket_name).upload(
             file_path_in_bucket,
             file_bytes,
             {'content-type': file.content_type}
         )
 
-        file_url = f"{SUPABASE_URL}/storage/v1/object/public/{res.fullPath}"
+        file_url = f"{SUPABASE_URL}/storage/v1/object/public/{response.fullPath}"
 
         return file_url
     else:

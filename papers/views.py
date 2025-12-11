@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Paper, Level, Subject
 from .serializers import PaperSerializer, LevelSerializer, SubjectSerializer
 from .utils.filters import PaperFilter
+from .utils.download_papers import paper_download_redirect
 
 # Home page route
 @api_view(['GET'])
@@ -66,18 +67,21 @@ def subjects(request):
 
     return Response({'subjects': serializer.data}, status=status.HTTP_200_OK)
 
-# Download paper route
-@login_required(login_url='users:login')
+# Download paper route  
+# @login_required(login_url='users:login')
 @api_view(['GET'])
 def download_paper(request, paper_id):
-    # To be edited later. I have just copied the code from the read papers route
-    try:
-        paper = Paper.objects.get(id=paper_id)
-    except Paper.DoesNotExist:
-        return Response({'error': 'Paper not found.'}, status=status.HTTP_404_NOT_FOUND)
+    # # To be edited later. I have just copied the code from the read papers route
+    # try:
+    #     paper = Paper.objects.get(id=paper_id)
+    #     download_URL = paper_download_redirect(paper)
+    #     print("DOWNLOAD:", download_URL)
 
-    serializer = PaperSerializer(paper)
-    return Response({'paper': serializer.data, 'message': 'Paper downloaded successfully!'}, status=status.HTTP_200_OK)
+    # except Paper.DoesNotExist:
+    #     return Response({'error': 'Paper not found.'}, status=status.HTTP_404_NOT_FOUND)
+    
+    # return Response({'message': 'Paper downloaded successfully!'}, status=status.HTTP_200_OK)
+    pass
 
 # Show downloaded papers
 @login_required(login_url='users:login')
@@ -100,4 +104,4 @@ def upload_papers(request):
     # subject
     # paper_number
     # file
-    ...
+    pass
