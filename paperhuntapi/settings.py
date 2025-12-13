@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'papers',
     'rest_framework',
     'ai_chats',
+    'rest_framework.authtoken',
 ]
 
 # REST_FRAMEWORK = {
@@ -41,6 +42,16 @@ INSTALLED_APPS = [
 #         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
 #     ]
 # }
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication', # If using JWT
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}    
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -119,11 +130,15 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# Media files (User uploads)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Custom user model
-# AUTH_USER_MODEL = 'users.CustomUser'
+AUTH_USER_MODEL = 'users.User'
 
 LOGIN_URL = 'login'
 

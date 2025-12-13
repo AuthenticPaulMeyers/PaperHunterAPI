@@ -1,13 +1,23 @@
 from django.urls import path
-from . import views
+from .views import (
+    RegisterView,
+    LoginView,
+    LogoutView,
+    ProfileView,
+    ChangePasswordView,
+    ProfilePictureView
+)
 
-# Create URL patterns here.
 app_name = 'users'
+
 urlpatterns = [
-      path('register', views.register, name='register'),
-      path('login', views.login, name='login'),
-      path('logout', views.logout, name='logout'),
-      path('profile', views.profile, name='profile'),
-      path('profile/update', views.update_profile, name='update_profile'),
-      path('password/change', views.change_password, name='change_password'),
+    # Authentication endpoints - matching specification
+    path('register/', RegisterView.as_view(), name='register'),
+    path('login/', LoginView.as_view(), name='login'),
+    path('logout/', LogoutView.as_view(), name='logout'),
+    
+    # Profile endpoints - matching specification
+    path('profile/', ProfileView.as_view(), name='profile'),
+    path('change-password/', ChangePasswordView.as_view(), name='change_password'),
+    path('profile/picture/', ProfilePictureView.as_view(), name='profile_picture'),
 ]
