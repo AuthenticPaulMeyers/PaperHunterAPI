@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Paper, Level, Subject
 from .serializers import PaperSerializer, LevelSerializer, SubjectSerializer
 from .utils.filters import PaperFilter
-from .utils.download_papers import paper_download_redirect
+# from .utils.download_papers import paper_download_redirect
 
 # Home page route
 @api_view(['GET'])
