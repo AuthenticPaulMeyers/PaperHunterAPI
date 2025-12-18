@@ -2,8 +2,8 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.contrib.auth.decorators import login_required
-from .models import Paper, Level, Subject
-from .serializers import PaperSerializer, LevelSerializer, SubjectSerializer
+from .models import Paper, Level, Subject, DownloadRecord
+from .serializers import PaperSerializer, LevelSerializer, SubjectSerializer, DownloadRecordSerializer
 from .utils.filters import PaperFilter
 
 # Home page route
@@ -25,69 +25,78 @@ def index(request):
 
         if not papers:
             return Response({'message': 'No papers found matching the criteria.'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'papers': papers, 'papers_count': papers_count}, status=status.HTTP_200_OK)
     
     except Paper.DoesNotExist:
         return Response({'error': 'Papers not found.'}, status=status.HTTP_404_NOT_FOUND)
-
-    return Response({'papers': papers, 'papers_count': papers_count}, status=status.HTTP_200_OK)
 
 # Read paper route
 @api_view(['GET'])
 def read_paper(request, paper_id):
     try:
         paper = Paper.objects.get(id=paper_id)
+        serializer = PaperSerializer(paper)
+        return Response({'paper': serializer.data}, status=status.HTTP_200_OK)
+    
     except Paper.DoesNotExist:
         return Response({'error': 'Paper not found.'}, status=status.HTTP_404_NOT_FOUND)
-
-    serializer = PaperSerializer(paper)
-    return Response({'paper': serializer.data}, status=status.HTTP_200_OK)
 
 # List all examination levels route
 @api_view(['GET'])
 def examination_levels(request):
     try:
         levels = Level.objects.all()
+        serializer = LevelSerializer(levels, many=True)
+        return Response({'examination_levels': serializer.data}, status=status.HTTP_200_OK)
     except Level.DoesNotExist:
         return Response({'error': 'Level not found.'}, status=status.HTTP_404_NOT_FOUND)
-
-    serializer = LevelSerializer(levels, many=True)
-
-    return Response({'examination_levels': serializer.data}, status=status.HTTP_200_OK)
+    
 
 # List all subjects route
 @api_view(['GET'])
 def subjects(request):
     try:
         subjects = Subject.objects.all()
+        serializer = SubjectSerializer(subjects, many=True)
+        return Response({'subjects': serializer.data}, status=status.HTTP_200_OK)
+    
     except Subject.DoesNotExist:
         return Response({'error': 'Subject not found.'}, status=status.HTTP_404_NOT_FOUND)
-
-    serializer = SubjectSerializer(subjects, many=True)
-
-    return Response({'subjects': serializer.data}, status=status.HTTP_200_OK)
+    
 
 # Download paper route  
 # @login_required(login_url='users:login')
 @api_view(['GET'])
 def download_paper(request, paper_id):
+    user = request.user
+
     try:
         paper = Paper.objects.get(id=paper_id)
-        # Implement download logic here (e.g., generate a download link, track downloads, etc
-        # For now, we'll just return a success message
-        # download_URL = paper_download_redirect(paper)
+        # Will implement proper download logic here later
         print("DOWNLOAD:", paper.file)
+        download = DownloadRecord.objects.create(paper=paper, user=user)
+        download.save()
+        return Response({'message': 'Paper downloaded successfully!'}, status=status.HTTP_200_OK)
 
     except Paper.DoesNotExist:
         return Response({'error': 'Paper not found.'}, status=status.HTTP_404_NOT_FOUND)
-    
-    return Response({'message': 'Paper downloaded successfully!'}, status=status.HTTP_200_OK)
-    
 
 # Show downloaded papers
-@login_required(login_url='users:login')
+# @login_required(login_url='users:login')
 @api_view(['GET'])
 def show_downloads(request):
-    # Placeholder
-    downloads = []
+    user = request.user
 
-    return Response({'downloads': downloads}, status=status.HTTP_200_OK)
+    try:
+        downloads = DownloadRecord.objects.filter(user=user)
+        if not downloads:
+            return Response({'message': 'You do not have downloaded files.'}, status=status.HTTP_404_NOT_FOUND)
+        
+        download_serializer = DownloadRecordSerializer(downloads, many=True)
+
+        return Response({'downloads': download_serializer.data}, status=status.HTTP_200_OK)
+    
+    except DownloadRecord.DoesNotExist:
+        return Response({'error': 'Download records not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+    

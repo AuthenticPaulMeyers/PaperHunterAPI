@@ -11,6 +11,5 @@ urlpatterns = [
       path('subjects/', views.subjects, name='subjects'),
       path('<int:paper_id>/download/', views.download_paper, name='download_paper'),
       path('downloads/', views.show_downloads, name='show_downloads'),
-      path('upload/', views.upload_papers, name='upload'),
       
 ]

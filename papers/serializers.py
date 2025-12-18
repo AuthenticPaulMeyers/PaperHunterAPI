@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Paper, Level, Subject
+from .models import Paper, Level, Subject, DownloadRecord
 
 # Serializer for Level model
 class LevelSerializer(serializers.ModelSerializer):
@@ -20,4 +20,11 @@ class PaperSerializer(serializers.ModelSerializer):
 
       class Meta:
           model = Paper
+          fields = '__all__'
+
+# Serializer for DownloadRecord model
+class DownloadRecordSerializer(serializers.ModelSerializer):
+      paper = PaperSerializer(read_only=True)
+      class Meta:
+          model = DownloadRecord
           fields = '__all__'

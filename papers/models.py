@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 # Levels
 class Level(models.Model):
     name = models.CharField(max_length=20, unique=True)
@@ -23,11 +23,17 @@ class Paper(models.Model):
     year = models.PositiveIntegerField()
     paper_number = models.CharField(max_length=20)
     file = models.FileField(upload_to='papers/')
+    downloads = models.PositiveIntegerField(default=0)
     uploaded_at = models.DateTimeField(auto_now_add=True)
     is_indexed = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.title} - {self.subject.name} ({self.year})"
-      
-           
-      
+
+class DownloadRecord(models.Model):
+    paper = models.ForeignKey(Paper, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    downloaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Download of {self.paper.title} from {self.user} at {self.downloaded_at}"
