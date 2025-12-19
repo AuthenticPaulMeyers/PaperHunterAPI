@@ -28,7 +28,7 @@ class Paper(models.Model):
     is_indexed = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.subject.name}"
+        return self.subject.name
 
 class DownloadRecord(models.Model):
     paper = models.ForeignKey(Paper, on_delete=models.CASCADE)
