@@ -34,7 +34,6 @@ INSTALLED_APPS = [
     'ai_chats',
     'django_filters',
     'storages',
-]
     'rest_framework.authtoken',
 ]
 
