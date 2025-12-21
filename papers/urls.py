@@ -1,16 +1,15 @@
 
 from django.urls import path
-from . import views
+from .views import ShowDownloadsView, ListSubjectsView, ListExamLevelsView, IndexView, ReadPaperView, DownloadPaperView
 
 # Create URL patterns here.
 app_name = 'papers'     
 urlpatterns = [
-      path('', views.index, name='index'),
-      path('read/<int:paper_id>/', views.read_paper, name='read_paper'),
-      path('levels/', views.examination_levels, name='examination_levels'),
-      path('subjects/', views.subjects, name='subjects'),
-      path('paper-stats/', views.paper_stats, name='paper_stats'),
-      path('<int:paper_id>/download/', views.download_paper, name='download_paper'),
-      path('downloads/', views.show_downloads, name='show_downloads'),
+      path('', IndexView.as_view(), name='index'),
+      path('read/<int:paper_id>/', ReadPaperView.as_view(), name='read_paper'),
+      path('levels/', ListExamLevelsView.as_view(), name='examination_levels'),
+      path('subjects/', ListSubjectsView.as_view(), name='subjects'),
+      path('<int:paper_id>/download/', DownloadPaperView.as_view(), name='download_paper'),
+      path('downloads/', ShowDownloadsView.as_view(), name='show_downloads'),
       
 ]
